@@ -10,7 +10,7 @@ import tarfile
 
 # 数据下载和预处理
 class Caltech101:
-    def __init__(self, data_dir='C:\\Users\\hello\\Documents\\AlexNet_GPU', batch_size=32, num_workers=4):
+    def __init__(self, data_dir='C:\\Users\\hello\\Documents\\AlexNet_GPU4', batch_size=32, num_workers=4):
         self.data_dir = data_dir
         self.batch_size = batch_size
         self.num_workers = num_workers
@@ -56,11 +56,11 @@ class Caltech101:
     def _download_data(self):
         url = 'https://data.caltech.edu/records/mzrjq-6wc02/files/caltech-101.zip?download=1'
         filename = 'caltech-101.zip'
-        download_and_extract_archive(url, self.data_dir, filename=filename)
+        download_and_extract_archive(url, self.data_folder, filename=filename)
 
     def _prepare_datasets(self):
         # 加载完整数据集
-        full_dataset = ImageFolder(os.path.join(self.data_dir, '101_ObjectCategories'), 
+        full_dataset = ImageFolder(os.path.join(self.data_folder, '101_ObjectCategories'), 
                                    transform=self.data_transforms['train'])
         
         # 移除背景类
