@@ -10,7 +10,7 @@ import tarfile
 
 # 数据下载和预处理
 class Caltech101:
-    def __init__(self, data_dir='C:\\Users\\hello\\Documents\\AlexNet_GPU4', batch_size=32, num_workers=4):
+    def __init__(self, data_dir='C:\\Users\\hello\\Documents\\AlexNet_GPU', batch_size=32, num_workers=4):
         self.data_dir = data_dir
         self.batch_size = batch_size
         self.num_workers = num_workers
