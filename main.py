@@ -23,7 +23,7 @@ def main():
     print(f"Using device: {device}")
     
     # 加载数据
-    data = Caltech101(batch_size=32)
+    data = Caltech101(batch_size=32,data_dir='C:\\Users\\hello\\Documents\\AlexNet_GPU')
     print(f"Number of classes: {data.num_classes}")
     
     # 实验配置
