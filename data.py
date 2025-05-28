@@ -17,8 +17,8 @@ class Caltech101:
         self.mean = [0.485, 0.456, 0.406]
         self.std = [0.229, 0.224, 0.225]
         
-        data_folder= os.path.join(self.data_dir, "data")
-        os.makedirs(data_folder, exist_ok=True)
+        self.data_folder= os.path.join(self.data_dir, "data")
+        os.makedirs(self.data_folder, exist_ok=True)
         
         # 定义数据转换
         self.data_transforms = {
@@ -44,8 +44,8 @@ class Caltech101:
         
         # 下载和准备数据
         self._download_data()
-        tar_file_path = os.path.join(self.data_dir, "caltech-101\\101_ObjectCategories.tar.gz")
-        extract_folder = os.path.join(self.data_dir, "101_ObjectCategories")
+        tar_file_path = os.path.join(self.data_folder, "caltech-101\\101_ObjectCategories.tar.gz")
+        extract_folder = os.path.join(self.data_folder, "101_ObjectCategories")
         os.makedirs(extract_folder, exist_ok=True)
         # 解压文件
         with tarfile.open(tar_file_path, 'r:gz') as tar:
