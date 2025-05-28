@@ -10,15 +10,15 @@ import tarfile
 
 # 数据下载和预处理
 class Caltech101:
-    def __init__(self, data_dir='C:\\Users\\hello\\Documents\\AlexNet_GPU4\\data', batch_size=32, num_workers=4):
+    def __init__(self, data_dir='C:\\Users\\hello\\Documents\\AlexNet_GPU', batch_size=32, num_workers=4):
         self.data_dir = data_dir
         self.batch_size = batch_size
         self.num_workers = num_workers
         self.mean = [0.485, 0.456, 0.406]
         self.std = [0.229, 0.224, 0.225]
         
-        # 创建数据目录
-        os.makedirs(data_dir, exist_ok=True)
+        data_folder= os.path.join(self.data_dir, "data")
+        os.makedirs(data_folder, exist_ok=True)
         
         # 定义数据转换
         self.data_transforms = {
