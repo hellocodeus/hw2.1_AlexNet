@@ -30,17 +30,17 @@ def main():
     experiments = {
         'pretrained_finetune': {
             'pretrained': True,
-            'finetune': True,
+            'freeze_layers': False,  # 不冻结参数，微调所有层
             'log_dir': './logs/pretrained_finetune'
         },
         'pretrained_freeze': {
             'pretrained': True,
-            'finetune': False,
+            'freeze_layers': True,   # 冻结除最后一层外的参数
             'log_dir': './logs/pretrained_freeze'
         },
         'random_init': {
             'pretrained': False,
-            'finetune': False,
+            'freeze_layers': False,  # 随机初始化，不冻结参数
             'log_dir': './logs/random_init'
         }
     }
@@ -51,30 +51,38 @@ def main():
     for exp_name, exp_config in experiments.items():
         print(f"\n=== Running experiment: {exp_name} ===")
         
-        # 创建模型
-        model = create_model(data.num_classes, pretrained=exp_config['pretrained'])
-        # 打印模型结构
-        print(model)
+        # 创建模型，正确传递freeze_layers参数
+        model = create_model(
+            num_classes=data.num_classes,
+            pretrained=exp_config['pretrained'],
+            freeze_layers=exp_config['freeze_layers']
+        )
         model = model.to(device)
         
-        # 定义损失函数和优化器
+        # 定义损失函数
         criterion = nn.CrossEntropyLoss()
         
-        if exp_config['pretrained'] and exp_config['finetune']:
-            # 微调：为不同层设置不同的学习率
-            params_to_update = []
-            for name, param in model.named_parameters():
-                if name.startswith('fc'):
-                    params_to_update.append({'params': param, 'lr': 1e-4})
-                else:
-                    params_to_update.append({'params': param, 'lr': 1e-5})
-            
-            optimizer = optim.Adam(params_to_update)
-            scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.1)
+        # 根据是否冻结层来设置优化器
+        if exp_config['freeze_layers']:
+            # 只训练最后一层
+            optimizer = optim.Adam(model.fc.parameters(), lr=1e-3)
         else:
-            # 只训练最后一层或随机初始化的网络
-            optimizer = optim.Adam(model.parameters(), lr=1e-4)
-            scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.1)
+            # 微调所有层或训练随机初始化的模型
+            if exp_config['pretrained']:
+                # 预训练模型微调，为不同层设置不同学习率
+                params_to_update = []
+                for name, param in model.named_parameters():
+                    if name.startswith('fc'):
+                        params_to_update.append({'params': param, 'lr': 1e-3})
+                    else:
+                        params_to_update.append({'params': param, 'lr': 1e-5})
+                optimizer = optim.Adam(params_to_update)
+            else:
+                # 随机初始化模型，所有层使用相同学习率
+                optimizer = optim.Adam(model.parameters(), lr=1e-3)
+        
+        # 学习率调度器
+        scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.1)
         
         # 训练模型
         model = train_model(
