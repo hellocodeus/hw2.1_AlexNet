@@ -5,6 +5,7 @@ from torch.utils.data import DataLoader, random_split
 from torchvision import transforms
 from torchvision.datasets import ImageFolder
 from torchvision.datasets.utils import download_and_extract_archive
+import tarfile
 
 
 # 数据下载和预处理
@@ -42,14 +43,21 @@ class Caltech101:
         }
         
         # 下载和准备数据
-        # self._download_data()
+        self._download_data()
+        tar_file_path = os.path.join(self.data_dir, "caltech-101\\101_ObjectCategories.tar.gz")
+        extract_folder = os.path.join(self.data_dir, "101_ObjectCategories")
+        os.makedirs(extract_folder, exist_ok=True)
+        # 解压文件
+        with tarfile.open(tar_file_path, 'r:gz') as tar:
+            tar.extractall(path=extract_folder)
+            print(f"成功解压文件")
         self._prepare_datasets()
         
-    # def _download_data(self):
-    #     url = 'https://data.caltech.edu/tindfiles/serve/1239ea37-e132-42ee-8c09-c383bb54e7ff/'
-    #     filename = 'caltech101.tar.gz'
-    #     download_and_extract_archive(url, self.data_dir, filename=filename)
-        
+    def _download_data(self):
+        url = 'https://data.caltech.edu/records/mzrjq-6wc02/files/caltech-101.zip?download=1'
+        filename = 'caltech-101.zip'
+        download_and_extract_archive(url, self.data_dir, filename=filename)
+
     def _prepare_datasets(self):
         # 加载完整数据集
         full_dataset = ImageFolder(os.path.join(self.data_dir, '101_ObjectCategories'), 
