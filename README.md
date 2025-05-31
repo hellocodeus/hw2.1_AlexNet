@@ -8,3 +8,4 @@
 2. 运行main.py即可进行模型训练和测试，并且训练结束后可以输出Loss和Accuracy的变化曲线并支持Tensorboard可视化训练结果。
 
 项目地址：https://github.com/hellocodeus/hw2.1_AlexNet.git
+模型权重下载地址：https://drive.google.com/file/d/1dmky7jHl0n8WRKrM5uM_T_GtHLQPmenS/view?usp=sharing
